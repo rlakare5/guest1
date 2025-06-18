@@ -1,0 +1,266 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Confirmation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+                'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+                sans-serif;
+            background-color: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .confirmation-container {
+            background-color: #fff;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .confirmation-header {
+            background-color: #dc2626;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .confirmation-header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .confirmation-header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .confirmation-content {
+            padding: 30px;
+        }
+
+        .booking-summary {
+            margin-bottom: 30px;
+        }
+
+        .booking-summary h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #dc2626;
+        }
+
+        .detail-item.total-guests {
+            grid-column: 1 / -1;
+            background-color: #dc2626;
+            color: white;
+            border-left: 4px solid #b91c1c;
+            font-weight: 600;
+        }
+
+        .detail-item .label {
+            font-weight: 600;
+            color: #555;
+        }
+
+        .detail-item.total-guests .label {
+            color: white;
+        }
+
+        .detail-item .value {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .detail-item.total-guests .value {
+            color: white;
+        }
+
+        .success-message {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background-color: #dc2626;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #b91c1c;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 768px) {
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="confirmation-container">
+        <div class="confirmation-header">
+            <h1>🎉 Booking Confirmed!</h1>
+            <p>Your table reservation has been successfully confirmed</p>
+        </div>
+        
+        <div class="confirmation-content">
+            <div class="success-message">
+                <strong>Success!</strong> Your booking has been confirmed. You will receive a confirmation email shortly.
+            </div>
+
+            <div class="booking-summary">
+                <h2>Booking Details</h2>
+                <div class="detail-grid" id="bookingDetails">
+                    <!-- Booking details will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <a href="/" class="btn btn-primary">Make Another Booking</a>
+                <button onclick="window.print()" class="btn btn-secondary">Print Confirmation</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load booking data from localStorage
+        const bookingData = localStorage.getItem('bookingData');
+        
+        if (bookingData) {
+            const data = JSON.parse(bookingData);
+            const detailsContainer = document.getElementById('bookingDetails');
+            
+            const totalGuests = (parseInt(data.male || 0) + parseInt(data.female || 0) + parseInt(data.children || 0));
+            
+            detailsContainer.innerHTML = `
+                <div class="detail-item">
+                    <span class="label">Name:</span>
+                    <span class="value">${data.name || 'Not specified'}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Mobile:</span>
+                    <span class="value">${data.mobile || 'Not specified'}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Email:</span>
+                    <span class="value">${data.email || 'Not specified'}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">City:</span>
+                    <span class="value">${data.city || 'Not specified'}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">State:</span>
+                    <span class="value">${data.state || 'Not specified'}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Restaurant:</span>
+                    <span class="value">${data.restaurant || 'Not specified'}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Updated Time Slot:</span>
+                    <span class="value">${data.timeSlots || 'Not specified'}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Booking Date:</span>
+                    <span class="value">${data.bookingDate || 'Not specified'}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Male Guests:</span>
+                    <span class="value">${data.male || '0'}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Female Guests:</span>
+                    <span class="value">${data.female || '0'}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Children:</span>
+                    <span class="value">${data.children || '0'}</span>
+                </div>
+                <div class="detail-item total-guests">
+                    <span class="label">Total Guests:</span>
+                    <span class="value">${totalGuests}</span>
+                </div>
+            `;
+        } else {
+            document.getElementById('bookingDetails').innerHTML = '<p>No booking data found.</p>';
+        }
+    </script>
+</body>
+</html>
